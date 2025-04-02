@@ -15,19 +15,14 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 
-const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
-  credentials: true,  // ✅ Required for cookies
+app.use(cors({ 
+  origin: 'https://yatri-amber.vercel.app', // Allow only your frontend
+  credentials: true // If using cookies or authentication
 }));
-
+// app.use(cors({ 
+//   origin: 'http://localhost:5173', // Allow only your frontend
+//   credentials: true // If using cookies or authentication
+// }));
 // Routes
 app.use('/api/auth', authRoutes); 
 

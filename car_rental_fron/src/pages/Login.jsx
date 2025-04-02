@@ -16,7 +16,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await loginUser(email, password);
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.data.token);
       navigate("/profile");
     } catch (error) {
       alert("Invalid Credentials");
@@ -41,7 +41,7 @@ const Login = () => {
     e.preventDefault();
     try {
       const data = await verifyOtp(email, otp);
-      localStorage.setItem("token", data.token);
+      localStorage.setItem("token", data.data);
       navigate("/profile");
     } catch (error) {
       alert("Invalid OTP");

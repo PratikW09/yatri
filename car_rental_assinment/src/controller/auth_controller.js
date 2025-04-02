@@ -47,7 +47,7 @@ const verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
     const response = await authService.verifyOtp(email, otp);
     res.cookie('jwt_token', response.token, response.cookieOptions);
-    return Response(res, 200, "OTP verified successfully");
+    return Response(res, 200, "OTP verified successfully",response.token);
   } catch (error) {
     return errorResponse(res, 500, error.message);
   }
