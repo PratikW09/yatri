@@ -1,81 +1,60 @@
-const User = require('../model/user.js');
+const {
+  getUserByIdService,
+  getCurrentUserService,
+  getAllUsersService,
+  updateUserByIdService,
+  deleteUserByIdService,
+} = require('../service/user_service.js');
+const { Response, errorResponse } = require('../utils/responseHandler.js');
 
-// Get User by ID
+// Controller: Get User by ID
 const getUserById = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const user = await User.findById({_id:id}).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
+    const user = await getUserByIdService(req.params.id);
+    Response(res, 200, "User fetched successfully", user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching user by ID" });
+    errorResponse(res, 404, error.message);
   }
 };
 
-// Get Current User
+// Controller: Get Current User
 const getCurrentUser = async (req, res) => {
-  const { userId } = req.user; // Assuming `req.user` is set after verifying JWT
-
   try {
-    const user = await User.findById({_id:userId}).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json(user);
+    
+    const user = await getCurrentUserService(req.user.userId);
+    Response(res, 200, "Current user fetched successfully", user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching current user" });
+    errorResponse(res, 404, error.message);
   }
 };
 
-// Get All Users
+// Controller: Get All Users
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password');
-    res.status(200).json(users);
+    const users = await getAllUsersService();
+    Response(res, 200, "Users fetched successfully", users);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error fetching all users" });
+    errorResponse(res, 500, "Error fetching all users", error);
   }
 };
 
-// Update User by ID
+// Controller: Update User by ID
 const updateUserById = async (req, res) => {
-  const { id } = req.params;
-  const updates = req.body;
-
   try {
-    const user = await User.findByIdAndUpdate(id, updates, { new: true }).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json({
-      message: "User updated successfully",
-      user,
-    });
+    const user = await updateUserByIdService(req.params.id, req.body);
+    Response(res, 200, "User updated successfully", user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error updating user" });
+    errorResponse(res, 404, error.message);
   }
 };
 
-// Delete User by ID
+// Controller: Delete User by ID
 const deleteUserById = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    const user = await User.findByIdAndDelete(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.status(200).json({ message: "User deleted successfully" });
+    await deleteUserByIdService(req.params.id);
+    Response(res, 200, "User deleted successfully");
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error deleting user" });
+    errorResponse(res, 404, error.message);
   }
 };
 

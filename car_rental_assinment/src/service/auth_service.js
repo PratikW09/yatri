@@ -128,7 +128,6 @@ const verifyOtp = async (email, otp) => {
     }
 
     const user = await User.findOne({ email });
-
     if (!user || !isOtpValid(user.otp, user.otpExpiry) || user.otp !== otp) {
       return { status: 400, data: { message: "Invalid or expired OTP" } };
     }
@@ -140,7 +139,9 @@ const verifyOtp = async (email, otp) => {
 
     return {
       status: 200,
-      data: { message: "Login successful", token },
+      token,
+      cookieOptions: getCookieOptions(),
+      data: { message: "OTP verified successfully", user, token },
     };
   } catch (error) {
     console.error("Error in verifyOtp:", error);

@@ -4,7 +4,6 @@ const { verifyToken } = require('../utils/jwt_utils');
 const authorizeRole = (roles = []) => {
   return (req, res, next) => {
     const token = req.cookies.jwt_token; // Retrieve token from cookies
-    console.log(token);
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
@@ -15,7 +14,6 @@ const authorizeRole = (roles = []) => {
       return res.status(403).json({ message: "Invalid or expired token" });
     }
 
-    console.log("token",decoded)
 
     if (roles.length && !roles.includes(decoded.role)) {
       return res.status(403).json({ message: "Access denied: Insufficient permissions" });

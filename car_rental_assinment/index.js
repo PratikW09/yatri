@@ -15,9 +15,17 @@ connectDB();
 app.use(express.json());
 app.use(cookieParser());
 
+const allowedOrigins = ["http://localhost:3000", "http://localhost:5173"];
+
 app.use(cors({
-  origin: 'http://localhost:5173', // Replace with your frontend URL
-  credentials: true // Allows cookies and authentication headers
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,  // ✅ Required for cookies
 }));
 
 // Routes
